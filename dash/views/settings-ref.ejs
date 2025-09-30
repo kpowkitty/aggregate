@@ -1,0 +1,39 @@
+<%# /views/settings-ref.ejs - User settings page %>
+<%- contentFor('body') %>
+<!-- xxx here or in layout? <%- include('partials/topBar.ejs') %> -->
+<div class="content">
+  <div class="menu">
+    <button class="account-settings" onclick="showMenu('account')">Account Settings</button>
+  </div>
+
+  <div class="main-content">
+		<%- include('partials/settings-account.ejs') %>
+  </div>
+</div>
+
+<script>
+	function showMenu(menuId) {
+		// Hide all menus first
+		document.querySelectorAll('.popup').forEach(element => element.classList.add('hidden'));
+		document.querySelectorAll('.popup').forEach(element => element.classList.remove('active'));
+		
+		// Then show the selected one
+		const element = document.getElementById(menuId);
+		if (element) {
+			element.classList.remove('hidden');
+			element.classList.add('active');
+		}
+	}
+
+	function hidePopup(button) {
+		const popup = button.closest('.popup');
+		if (popup) {
+			popup.classList.remove('active');
+			popup.classList.add('hidden');
+		}
+	}
+</script>
+
+<script src='/js/account.js'></script>
+
+<!-- vim: set ts=2 sw=2 sts=2 noet filetype=html: -->

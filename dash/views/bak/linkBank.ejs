@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Link Bank</title>
+    <link rel="stylesheet" href="/css/landing.css">
+    <link rel="stylesheet" href="/css/info.css">
+</head>
+<body>
+  <%- include('partials/info.ejs') %>
+  <div class="container">
+      <h1>Aggregate</h1>
+      <h3>Bring your finances together<h3>
+			<h4>Link your bank here!</h4>
+	
+			<!-- CREDIT: Plaid minimal quickstart -->
+			<button
+    	  type="button"
+    	  id="link-account"
+    	  class="btn btn-primary btn-dark btn-lg"
+    	  style="
+    	    border: 1px solid black;
+    	    border-radius: 5px;
+    	    background: black;
+    	    height: 90px;
+    	    width: 150px;
+    	    margin-top: 16px;
+    	    color: white;
+    	    font-size: 18px;
+    	  "
+    	>
+    	  <strong>Link account</strong>
+    	</button>
+    	<pre
+    	  id="response"
+    	  style="
+    	    top: 60;
+    	    margin-left: 10;
+    	    bottom: 0;
+    	    position: fixed;
+    	    overflow-y: scroll;
+    	    overflow-x: hidden;
+    	    font-size: 14px;
+    	  "
+    	></pre>
+  </div>
+
+	<script src="https://cdn.plaid.com/link/v2/stable/link-initialize.js"></script>
+	<script src='/js/plaid.js'></script>
+</body>
+</html>
+
+<!-- vim: set ts=2 sw=2 sts=2 noet filetype=html: -->

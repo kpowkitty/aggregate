@@ -1,0 +1,85 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aggregate</title>
+    <link rel="stylesheet" href="/css/settings.css">
+    <link rel="stylesheet" href="/css/profile.css">
+</head>
+<body>
+  <%- include('partials/topBar.ejs') %>
+  <div class="content">
+    <div class="menu">
+      <button class="account-settings" onclick="showMenu('account')">Account Settings</button>
+      <button class="bank-management" onclick="showMenu('bank')">Bank Management</button>
+      <button class="stock-management" onclick="showMenu('stock')">Stock Management</button>
+    </div>
+    <div class="main-content">
+      <div id="account" class="popup hidden">
+        <button class="close-popup" onclick="hidePopup(this)">✕</button>
+	<h3>Account Settings</h3>
+	<div>
+	  <button id="change-pfp">Change Profile Picture</button>
+	  <button id="change-pw">Change Password</button>
+	  <button id="change-email">Change Email</button>
+	</div>
+      </div>
+      <div id="bank" class="popup hidden">
+        <button class="close-popup" onclick="hidePopup(this)">✕</button>
+	<h3>Bank Management</h3>
+        <button id="add-bank">Add Bank</button>
+	<div style="margin-top: 1rem;">
+          <label for="remove-bank">Remove Bank:</label>
+          <select id="remove-bank">
+            <option value="" disabled selected>Select a bank to remove</option>
+            <option value="bank1">Bank A</option>
+            <option value="bank2">Bank B</option>
+            <option value="bank3">Bank C</option>
+          </select>
+          <button id="remove-bank-button">Remove</button>
+        </div>
+      </div>
+      <div id="stock" class="popup hidden">
+        <button class="close-popup" onclick="hidePopup(this)">✕</button>
+	<h3>Stock Management</h3>
+        <button id="add-stock">Add Stock</button>
+	<div style="margin-top: 1rem;">
+          <label for="remove-stock">Remove Stock:</label>
+          <select id="remove-stock">
+            <option value="" disabled selected>Select a stock to remove</option>
+            <option value="stock1">Stock A</option>
+            <option value="stock2">Stock B</option>
+            <option value="stock3">Stock C</option>
+          </select>
+          <button id="remove-stock-button">Remove</button>
+        </div>
+      </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function showMenu(menuId) {
+      // Hide all menus first
+      document.querySelectorAll('.popup').forEach(element => element.classList.add('hidden'));
+      document.querySelectorAll('.popup').forEach(element => element.classList.remove('active'));
+    
+      // Then show the selected one
+      const element = document.getElementById(menuId);
+      if (element) {
+        element.classList.remove('hidden');
+        element.classList.add('active');
+      }
+    }
+    function hidePopup(button) {
+      const popup = button.closest('.popup');
+      if (popup) {
+        popup.classList.remove('active');
+        popup.classList.add('hidden');
+      }
+    }
+  </script>
+</body>
+</html>
+
+<!-- vim: set ts=2 sw=2 sts=2 noet filetype=html: -->

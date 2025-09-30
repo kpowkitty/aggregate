@@ -1,0 +1,8 @@
+<div class="menu">
+  <% profiles.forEach((profile, index) => { %>
+    <a href="/profile/<%= profile.id %>"><%= profile.name %></a>
+  <% }); %>
+  <button id="add-profile-button" class="add-profile">+</button>
+</div>
+
+<!-- vim: set ts=2 sw=2 sts=2 noet filetype=html: -->

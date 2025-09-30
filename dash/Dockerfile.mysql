@@ -1,0 +1,74 @@
+FROM archlinux:base-devel
+
+SHELL ["/bin/bash", "-c"]
+
+# this comes from LXC, where this breaks pacman. may not be needed
+RUN sed -i 's/#DisableSandbox/DisableSandbox/g' /etc/pacman.conf
+
+# update system
+RUN pacman -Syu --noconfirm
+
+# don't need base-devel, because we're using base-devel image
+RUN pacman -S --noconfirm sudo \
+	openssh \
+	git \
+	vim \
+	curl \
+	wget \
+	nodejs \
+	npm
+
+# MySQL dependencies
+RUN pacman -S --noconfirm cmake \
+	libaio \
+	jemalloc \
+	rpcsvc-proto \
+	libedit \
+	libfido2 \
+	re2 \
+	rapidjson
+
+# make home and add to wheel group
+RUN useradd -m aggregate && \
+	usermod -aG wheel aggregate && \
+	echo "aggregate ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers && \
+	ln -s /bin/vim /bin/vi && \
+	mkdir -p /home/aggregate/builds
+
+# CREDIT: https://github.com/sickcodes/Docker-OSX/blob/master/Dockerfile 
+# Thank you Docker-OSX.
+# Fixes issue with invalid GPG keys: update the archlinux-keyring package to get the latest keys, then remove and regenerate gnupg keys
+RUN pacman -Sy archlinux-keyring --noconfirm \
+	&& rm -rf /etc/pacman.d/gnupg \
+	&& pacman-key --init \
+	&& pacman-key --populate archlinux
+
+# Verify GPG key and build.
+USER aggregate
+WORKDIR /home/aggregate/builds
+
+RUN gpg --keyserver hkps://keyserver.ubuntu.com/ --recv-keys B7B3B788A8D3785C && \
+	git clone https://aur.archlinux.org/mysql.git && \
+	cd mysql && \
+	makepkg -si --noconfirm
+
+# Update packages on an already created container.
+USER root
+RUN cat <'EOF' >> /usr/local/bin/update-and-run.sh
+#!/usr/bin/env bash
+echo "Updating system packages..."
+pacman -Syu --noconfirm
+echo "System updated successfully!"
+exec "$@"
+EOF && \
+	chmod +x /usr/local/bin/update-and-run.sh
+
+RUN mkdir -p /var/lib/mysql && \
+	chown -R mysql:mysql /var/lib/mysql
+
+RUN mysqld --initialize-insecure --user=mysql --basedir=/usr \
+	--datadir=/var/lib/mysql
+
+EXPOSE 3306 8080
+ENTRYPOINT ["/usr/local/bin/update-and-run.sh"]
+CMD ["bash"]

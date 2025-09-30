@@ -1,0 +1,12 @@
+<!-- /partials/head.ejs - Document head partial -->
+<meta charset='UTF-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0'>
+<title><%= typeof title !== 'undefined' ? title : 'Aggregate' %></title>
+
+<% if (typeof styles !== 'undefined' && styles.length > 0) { %>
+	<% styles.forEach(function(style) { %>
+		<link rel='stylesheet' href='/css/<%= style %>.css'>
+	<% }); %>
+<% } %>
+
+<!-- vim: set ts=2 sw=2 sts=2 noet filetype=html: -->

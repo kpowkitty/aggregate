@@ -1,0 +1,41 @@
+<!-- /partials/trans.ejs - Main transactions display partial -->
+<div class="table-container">
+  <table>
+    <thead>
+      <tr>
+        <th>Card</th>
+        <th>Date</th>
+        <th>Amount</th>
+        <th>Merchant</th>
+				<th>Category</th>
+        <th>Old Balance</th>
+				<th>New Balance</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% if (trans && trans.length > 0) { %>
+        <% trans.forEach(t => { %>
+          <tr data-account-id="<%= t.account_id %>">
+            <td><%= t.account_mask || 'N/A' %></td>
+            <td><%= new Date(t.date).toLocaleDateString() %></td>
+            <td>$<%= t.amount.toFixed(2) %></td>
+            <td><%= t.merchant_name || t.name || 'Unknown' %></td>
+            <td><%= t.category ? t.category.join(', ') : 'Uncategorized' %></td>
+            <td>$<%= t.account_balance_before.toFixed(2) %></td>
+            <td>$<%= t.account_balance_after.toFixed(2) %></td>
+          </tr>
+        <% }); %>
+      <% } else { %>
+        <tr>
+          <td colspan="7" class="no-data">No transactions found.</td>
+        </tr>
+      <% } %>
+    </tbody>
+  </table>
+</div>
+
+<div class="chart-container" style="display: none;">
+  <canvas id="transactions-chart"></canvas>
+</div>
+<!-- vim: set ts=2 sw=2 sts=2 noet filetype=javascript: -->

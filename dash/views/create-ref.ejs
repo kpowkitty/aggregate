@@ -1,0 +1,34 @@
+<%# create.ejs - Create account page %>
+<%- contentFor('body') %>
+<%- include('partials/info.ejs') %>
+<%- include('partials/home.ejs') %>
+<div class="container">
+  <h1 class="logo">Aggregate</h1>
+  <p class="tagline">Create your account</p>
+  
+  <form id="create-account-form" action="/create" method="POST">
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" required>
+    </div>
+    
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" required>
+      <p class="password-requirements">Must be at least 8 characters</p>
+    </div>
+    
+    <div class="form-group">
+      <label for="confirmPassword">Confirm Password</label>
+      <input type="password" id="confirmPassword" name="confirmPassword" required>
+    </div>
+    
+    <button type="submit" class="createButton">Create account</button>
+    
+    <div class="login-link">
+      Already have an account? <a href="/login">Log in</a>
+    </div>
+  </form>
+</div>
+
+<!-- vim: set ts=2 sw=2 sts=2 noet filetype=html: -->

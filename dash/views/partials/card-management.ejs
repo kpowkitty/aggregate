@@ -1,0 +1,29 @@
+<!-- /partials/card-management.ejs - Card management partial -->
+<div id="card-management">
+  <% if (cards && cards.length > 0) { %>
+    <div class="dropdown">
+      <label for="add-card">Add Card:</label>
+      <select id="add-card">
+        <% cards.forEach(card => { %>
+          <option value="<%= card.id %>"><%= card.name %> (*<%= card.mask %>)</option>
+        <% }); %>
+      </select>
+      <button id="add-card-button">Add</button>
+    </div>
+  <% } %>
+  
+  <% if (cards && cards.length > 0) { %>
+    <div class="dropdown">
+      <label for="remove-card">Remove Card:</label>
+      <select id="remove-card">
+        <% cards.forEach(card => { %>
+          <option value="<%= card.id %>"><%= card.name %> (*<%= card.mask %>)</option>
+        <% }); %>
+      </select>
+      <button id="remove-card-button">Remove</button>
+    </div>
+  <% } %>
+</div>
+
+<script src="/js/profile.js"></script>
+<!-- vim: set ts=2 sw=2 sts=2 noet filetype=html: -->

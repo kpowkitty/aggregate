@@ -1,0 +1,11 @@
+<div class="profile-info">
+   <h2><%= currprof.name %></h2>
+   <p><strong>Banks:</strong>
+     <%= currprof.banks ? currprof.banks.join(', ') : 'None' %></p>
+   <p><strong>Cards:</strong>
+     <%= currprof.cards && currprof.cards.length > 0 ? currprof.cards.map(card => card.mask).join(', ') : 'None' %></p>
+   <p><strong>Created:</strong>
+     <%= new Date(currprof.createdAt).toLocaleDateString() %></p>
+</div>
+
+<!-- vim: set ts=2 sw=2 sts=2 noet filetype=html: -->

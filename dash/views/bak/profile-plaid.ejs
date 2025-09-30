@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aggregate</title>
+    <link rel="stylesheet" href="/css/profile.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+ <div class="content">
+    <div class="menu">
+      <% profiles.forEach((profile, index) => { %>
+        <a href="/profile/<%= profile.id %>"><%= profile.name %></a>
+      <% }); %>
+      <button id="add-profile-button" class="add-profile">+</button>
+    </div>
+    
+    <div class="main-content">
+      <% if (currprof) { %>
+        <div class="profile-info">
+          <h2><%= currprof.name %></h2>
+          <p><strong>Banks:</strong>
+            <%= currprof.banks ? currprof.banks.join(', ') : 'None' %></p>
+          <p><strong>Cards:</strong>
+            <%= currprof.cards && currprof.cards.length > 0 ? currprof.cards.map(card => card.mask).join(', ') : 'None' %></p>
+          <p><strong>Created:</strong>
+            <%= new Date(currprof.createdAt).toLocaleDateString() %></p>
+        </div>
+
+        <div class="toggle">
+          <span id="table-label">Table</span>
+          <label class="switch">
+            <input type="checkbox" id="toggle-view">
+            <span class="slider"></span>
+          </label>
+          <span id="graph-label">Graph</span>
+        </div>
+
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Card</th>
+                <th>Business</th>
+                <th>Transaction Amount</th>
+                <th>Old Balance</th>
+                <th>New Balance</th>
+                <th>Category</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <% if (trans && trans.length > 0) { %>
+                <% trans.forEach(transaction => { %>
+                  <tr>
+                    <td><%= transaction.account_mask || (transaction.account_id ? transaction.account_id.slice(-4) : 'N/A') %></td>
+                    <td><%= transaction.merchant_name || transaction.name || 'Unknown' %></td>
+                    <td>$<%= Math.abs(transaction.amount).toFixed(2) %></td>
+                    <td>$<%= (transaction.account_balance_before || 0).toFixed(2) %></td>
+                    <td>$<%= (transaction.account_balance_after || 0).toFixed(2) %></td>
+                    <td><%= transaction.category ? transaction.category.join(', ') : 'Uncategorized' %></td>
+                    <td><%= new Date(transaction.date).toLocaleDateString() %></td>
+                  </tr>
+                <% }); %>
+              <% } else { %>
+                <tr>
+                  <td colspan="7" class="no-data">No transactions found. Connect your bank account to see transactions.</td>
+                </tr>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="chart-container" style="display: none;">
+          <canvas id="transactions-chart"></canvas>
+        </div>
+
+        <div class="settings">
+          <h2>Settings</h2>
+          
+          <div id="card-management">
+            <% if (availCards && availCards.length > 0) { %>
+              <div class="dropdown">
+                <label for="add-card">Add Card:</label>
+                <select id="add-card">
+                  <% availCards.forEach(card => { %>
+                    <option value="<%= card.id %>"><%= card.name %> (*<%= card.mask %>)</option>
+                  <% }); %>
+                </select>
+                <button id="add-card-button">Add</button>
+              </div>
+            <% } %>
+            
+            <% if (currprof.cards && currprof.cards.length > 0) { %>
+              <div class="dropdown">
+                <label for="remove-card">Remove Card:</label>
+                <select id="remove-card">
+                  <% currprof.cards.forEach(card => { %>
+                    <option value="<%= card.id %>"><%= card.name %> (*<%= card.mask %>)</option>
+                  <% }); %>
+                </select>
+                <button id="remove-card-button">Remove</button>
+              </div>
+            <% } %>
+          </div>
+
+          <div class="dropdown">
+            <label for="sort">Sort:</label>
+            <select id="sort">
+              <option value="date" <%= sort === 'date' ? 'selected' : '' %>>By Date</option>
+              <option value="amount" <%= sort === 'amount' ? 'selected' : '' %>>By Amount</option>
+              <option value="category" <%= sort === 'category' ? 'selected' : '' %>>By Category</option>
+            </select>
+          </div>
+
+          <div class="filter">
+            <h3>Filter by Tag</h3>
+            <% if (tags && tags.length > 0) { %>
+              <% tags.forEach(tag => { %>
+                <label>
+                  <input type="checkbox" value="<%= tag.id %>" class="tag-filter"> <%= tag.name %>
+                </label>
+              <% }); %>
+            <% } else { %>
+              <p>No tags created yet. Create a tag to filter transactions.</p>
+            <% } %>
+          </div>
+          <button id="add-tag-button">Add Tag</button>
+        </div>
+
+				<!-- Old tag system below - we may want to limit the amount of tags we
+					show!
+        <label><input type="checkbox" value="stores"> Stores</label>
+        <label><input type="checkbox" value="gas"> Gas</label>
+        <label><input type="checkbox" value="groceries"> Groceries</label>
+        <label><input type="checkbox" value="work"> Work</label>
+        <label><input type="checkbox" value="medical"> Medical</label>
+				-->
+
+      <% } else { %>
+        <div class="no-profile">
+          <h2>No profiles found</h2>
+          <p>Create a profile to start tracking your finances</p>
+          <button id="create-first-profile">Create Profile</button>
+        </div>
+      <% } %>
+    </div>
+  </div>
+
+  <!-- New Tag Menu -->
+  <div id="new-tag-menu" class="new-tag-menu hidden">
+    <div class="modal-content">
+      <button id="close-new-tag-menu" class="close-button">X</button>
+      <h3>New Tag</h3>
+      <div class="form-group">
+        <label for="tag-name">Tag Name:</label>
+        <input type="text" id="tag-name" placeholder="Enter tag name">
+      </div>
+      <div class="form-group">
+        <label for="associated-businesses">Associated Businesses:</label>
+        <select id="associated-businesses" multiple>
+          <% if (uniqueBusinesses && uniqueBusinesses.length > 0) { %>
+            <% uniqueBusinesses.forEach(business => { %>
+              <option value="<%= business %>"><%= business %></option>
+            <% }); %>
+          <% } %>
+        </select>
+      </div>
+      <button id="save-tag-button">Save Tag</button>
+    </div>
+  </div>
+
+  <!-- New Profile Menu -->
+  <div id="new-profile-menu" class="new-tag-menu hidden">
+    <div class="modal-content">
+      <button id="close-new-profile-menu" class="close-button">X</button>
+      <h3>New Profile</h3>
+      <div class="form-group">
+        <label for="profile-name">Profile Name:</label>
+        <input type="text" id="profile-name" placeholder="Enter profile name">
+      </div>
+      <button id="save-profile-button">Create Profile</button>
+    </div>
+  </div>
+
+  <!-- Overlay -->
+  <div id="overlay" class="overlay hidden"></div>
+
+	<script>
+    // Toggle between table and chart view
+    const toggleSwitch = document.getElementById('toggle-view');
+    const tableContainer = document.querySelector('.table-container');
+    const chartContainer = document.querySelector('.chart-container');
+    
+    <% if (currprof && trans && trans.length > 0) { %>
+      const ctx = document.getElementById('transactions-chart').getContext('2d');
+      let isTableView = true;
+
+      // Process transaction data for chart
+      const merchantData = {};
+      <% trans.forEach(transaction => { %>
+        const merchant = '<%= transaction.merchant_name || transaction.name || "Unknown" %>';
+        const amount = <%= Math.abs(transaction.amount) %>;
+        if (merchantData[merchant]) {
+          merchantData[merchant] += amount;
+        } else {
+          merchantData[merchant] = amount;
+        }
+      <% }); %>
+
+      const merchants = Object.keys(merchantData);
+      const amounts = merchants.map(merchant => merchantData[merchant]);
+
+      // Create random colors for the chart
+      function getRandomColors(count) {
+        const colors = [];
+        const hoverColors = [];
+        
+        for (let i = 0; i < count; i++) {
+          const r = Math.floor(Math.random() * 255);
+          const g = Math.floor(Math.random() * 255);
+          const b = Math.floor(Math.random() * 255);
+          
+          colors.push(`rgba(${r}, ${g}, ${b}, 0.8)`);
+          hoverColors.push(`rgba(${r}, ${g}, ${b}, 1)`);
+        }
+        
+        return { colors, hoverColors };
+      }
+
+      const { colors, hoverColors } = getRandomColors(merchants.length);
+
+      const transactionData = {
+        labels: merchants,
+        datasets: [{
+          label: 'Money Spent at Vendor',
+          data: amounts,
+          backgroundColor: colors,
+          hoverBackgroundColor: hoverColors
+        }]
+      };
+
+      let pieChart;
+
+      if (toggleSwitch) {
+        toggleSwitch.addEventListener('change', () => {
+          if (isTableView) {
+            tableContainer.style.display = 'none';
+            chartContainer.style.display = 'block';
+
+            // Render the pie chart if it doesn't exist
+            if (!pieChart) {
+              pieChart = new Chart(ctx, {
+                type: 'pie',
+                data: transactionData,
+                options: {
+                  responsive: true,
+                  plugins: {
+                    legend: {
+                      position: 'top',
+                    },
+                    tooltip: {
+                      callbacks: {
+                        label: function(context) {
+                          return `${context.label}: $${context.raw.toFixed(2)}`;
+                        }
+                      }
+                    }
+                  },
+                },
+              });
+            }
+          } else {
+            tableContainer.style.display = 'block';
+            chartContainer.style.display = 'none';
+          }
+          isTableView = !isTableView;
+        });
+      }
+    <% } %>
+
+    // Tag management
+    const addTagButton = document.getElementById('add-tag-button');
+    const newTagMenu = document.getElementById('new-tag-menu');
+    const closeNewTagMenuButton = document.getElementById('close-new-tag-menu');
+    const saveTagButton = document.getElementById('save-tag-button');
+    const overlay = document.getElementById('overlay');
+
+    if (addTagButton) {
+      addTagButton.addEventListener('click', () => {
+        newTagMenu.classList.remove('hidden');
+        overlay.classList.remove('hidden');
+      });
+    }
+
+    if (closeNewTagMenuButton) {
+      closeNewTagMenuButton.addEventListener('click', () => {
+        newTagMenu.classList.add('hidden');
+        overlay.classList.add('hidden');
+      });
+    }
+
+    if (saveTagButton) {
+      saveTagButton.addEventListener('click', () => {
+        const tagName = document.getElementById('tag-name').value.trim();
+        const businessSelect = document.getElementById('associated-businesses');
+        const selectedBusinesses = Array.from(businessSelect.selectedOptions).map(option => option.value);
+        
+        if (tagName && selectedBusinesses.length > 0) {
+          // Send the data to the server
+          fetch('/api/tags', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ 
+              name: tagName, 
+              businesses: selectedBusinesses,
+              profileId: '<%= currprof ? currprof.id : "" %>'
+            }),
+          })
+          .then(response => response.json())
+          .then(data => {
+            if (data.success) {
+              // Reload the page to show the new tag
+              window.location.reload();
+            }
+          })
+          .catch(error => console.error('Error creating tag:', error));
+        }
+      });
+    }
+
+		// Profile management
+		const addProfileButton = document.getElementById('add-profile-button');
+		const newProfileMenu = document.getElementById('new-profile-menu');
+		const closeNewProfileMenuButton = document.getElementById('close-new-profile-menu');
+		const saveProfileButton = document.getElementById('save-profile-button');
+		const createFirstProfileButton = document.getElementById('create-first-profile');
+		
+		function openProfileModal() {
+		  newProfileMenu.classList.remove('hidden');
+		  overlay.classList.remove('hidden');
+		}
+		
+		if (addProfileButton) {
+		  addProfileButton.addEventListener('click', openProfileModal);
+		}
+		
+		if (createFirstProfileButton) {
+		  createFirstProfileButton.addEventListener('click', openProfileModal); // Fixed: Added closing parenthesis
+		} // Fixed: Added closing curly brace
+		
+		if (closeNewProfileMenuButton) {
+		  closeNewProfileMenuButton.addEventListener('click', () => {
+		    newProfileMenu.classList.add('hidden');
+		    overlay.classList.add('hidden');
+		  });
+		}
+		
+		if (saveProfileButton) {
+		  saveProfileButton.addEventListener('click', () => {
+		    const profileName = document.getElementById('profile-name').value.trim();
+		    
+		    if (profileName) {
+		      // Send the data to the server
+		      fetch('/api/profiles/create', {
+		        method: 'POST',
+		        headers: {
+		          'Content-Type': 'application/json',
+		        },
+		        body: JSON.stringify({ name: profileName }),
+		      })
+		      .then(response => response.json())
+		      .then(data => {
+		        if (data.success) {
+		          // Redirect to the new profile page
+		          window.location.href = `/profile/${data.profileId}`;
+		        }
+		      })
+		      .catch(error => console.error('Error creating profile:', error));
+		    }
+		  });
+		}
+		
+		// Check if account is connected - this code now executes properly
+		fetch('/api/is_account_connected')
+		  .then(response => response.json())
+		  .then(data => {
+		    if (!data.status) {
+		      const linkBankButton = document.createElement('button');
+		      linkBankButton.textContent = 'Connect a Bank Account';
+		      linkBankButton.className = 'link-bank-button';
+		      linkBankButton.addEventListener('click', () => {
+		        window.location.href = '/linkBank';
+		      });
+		
+		      const settings = document.querySelector('.settings');
+		      if (settings) {
+		        // Only add button once instead of four times
+		        settings.prepend(linkBankButton);
+		      }
+		    }
+		  })
+		  .catch(err => console.error('Error checking account connection:', err));
+	</script>
+</body>
+</html>
+
+<!-- vim: set ts=2 sw=2 sts=2 noet filetype=html: -->

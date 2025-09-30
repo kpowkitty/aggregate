@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<body>
+	<%- include('../partials/topBar.ejs)' %>
+	<div class="content">
+		<%- include('../partials/profile-menu') %>
+    <div class="main-content">
+				<%- include('../partials/profile-info') %>
+
+        <div class="toggle">
+          <span id="table-label">Table</span>
+          <label class="switch">
+            <input type="checkbox" id="toggle-view">
+            <span class="slider"></span>
+          </label>
+          <span id="graph-label">Graph</span>
+        </div>
+
+				<%- include('../partials/trans.ejs') %>
+
+        <div class="chart-container" style="display: none;">
+          <canvas id="transactions-chart"></canvas>
+        </div>
+
+				<%- include('../partials/profile-settings') %>
+
+      	<canvas id="spendingChart"></canvas>
+				<script src="/js/charts.js"></script>
+
+				<%- include('../partials/profile-create') %>
+    </div>
+  </div>
+
+</body>
+</html>
+
+<!-- vim: set ts=2 sw=2 sts=2 noet filetype=html: -->

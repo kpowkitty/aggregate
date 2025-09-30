@@ -1,0 +1,13 @@
+<!-- /partials/sort.ejs - Sort transactions partial -->
+<div class="dropdown">
+	<label for="sort">Sort:</label>
+	<select id="sort" onchange="location = '?sort=' + this.value;">
+		<option value="date-desc" <%= sort === 'date-desc' ? 'selected' : '' %>>Date (Newest First)</option>
+		<option value="date-asc" <%= sort === 'date-asc' ? 'selected' : '' %>>Date (Oldest First)</option>
+		<option value="amount-desc" <%= sort === 'amount-desc' ? 'selected' : '' %>>Amount (Highest First)</option>
+		<option value="amount-asc" <%= sort === 'amount-asc' ? 'selected' : '' %>>Amount (Lowest First)</option>
+		<option value="category" <%= sort === 'category' ? 'selected' : '' %>>By Category</option>
+	</select>
+</div>
+
+<!-- vim: set ts=2 sw=2 sts=2 noet filetype=html: -->

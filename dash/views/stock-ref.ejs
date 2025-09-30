@@ -1,0 +1,18 @@
+<%# /views/stock-ref.ejs - User stocks page %>
+<%- contentFor('body') %>
+<!-- xxx here or in layout? <%- include('partials/topBar.ejs') %> -->
+<div class="content">
+  <div class="menu">
+    <a href=#sp500>S&P 500</a>
+    <a href=#apple>Apple</a>
+    <button class="add-stock">+</button>
+  </div>
+  <div class="stock-content">
+    <canvas id="stock-chart" width="800" height="400"></canvas>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="js/stock.js"></script>
+
+<!-- vim: set ts=2 sw=2 sts=2 noet filetype=html: -->

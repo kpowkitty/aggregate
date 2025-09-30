@@ -1,0 +1,20 @@
+<%# layouts/main.ejs - Main user dashboard layout %>
+<!DOCTYPE html>
+<html lan='en'>
+
+<head>
+	<%- include('../partials/head') %>
+
+	<!-- xxx do we need in all main layouts? -->
+	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+  <%- include('../partials/topBar.ejs') %>
+  <main class='container'><%- body %></main>
+  <%- include('../partials/footer.ejs') %>
+</body>
+
+</html>
+
+<!-- vim: set ts=2 sw=2 sts=2 noet filetype=html: -->

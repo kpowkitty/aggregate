@@ -1,0 +1,26 @@
+<%# /views/layouts/landing.ejs - Landing page layout template %>
+<!DOCTYPE html>
+<html lang='en'>
+
+<head>
+	<%- include('../partials/head') %>
+</head>
+
+<body>
+	<% if (typeof showInfo !== 'undefined' && showInfo) { %>
+		<%- include('../partials/info') %>
+	<% } %>
+
+	<% if (typeof showHome !== 'undefined' && showHome) { %>
+		<%- include('../partials/home') %>
+	<% } %>
+
+	<%- include('../partials/flash-messages.ejs') %>
+
+	<%- body %>
+
+	<script src='/js/util.js'></script>
+</body>
+</html>
+
+<!-- vim: set ts=2 sw=2 sts=2 noet filetype=html: -->

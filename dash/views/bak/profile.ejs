@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aggregate</title>
+    <link rel="stylesheet" href="/css/profile.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <%- include('partials/topBar.ejs') %>
+  <div class="content">
+    <div class="menu">
+      <a href="#profile1">Profile 1</a>
+      <a href="#profile2">Profile 2</a>
+      <a href="#profile3">Profile 3</a>
+      <button class="add-profile">+</button>
+    </div>
+    <div class="main-content">
+      <div class="profile-info">
+        <h2>Profile 1</h2>
+        <p><strong>Banks:</strong> Bank A, Bank B</p>
+        <p><strong>Cards:</strong> Card 1, Card 2</p>
+        <p><strong>Created:</strong> January 1, 2023</p>
+      </div>
+      <div class="toggle">
+        <span id="table-label">Table</span>
+        <label class="switch">
+          <input type="checkbox" id="toggle-view">
+          <span class="slider"></span>
+        </label>
+        <span id="graph-label">Graph</span>
+      </div>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Card</th>
+              <th>Business</th>
+              <th>Transaction Amount</th>
+              <th>Old Balance</th>
+              <th>New Balance</th>
+              <th>Note</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1234</td>
+              <td>Store A</td>
+              <td>$50.00</td>
+              <td>$500.00</td>
+              <td>$450.00</td>
+              <td>Groceries</td>
+              <td>2025-04-01</td>
+            </tr>
+            <tr>
+              <td>5678</td>
+              <td>Gas Station</td>
+              <td>$30.00</td>
+              <td>$450.00</td>
+              <td>$420.00</td>
+              <td>Fuel</td>
+              <td>2025-04-02</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="chart-container" style="display: none;">
+      <canvas id="transactions-chart"></canvas>
+    </div>
+    <div class="settings">
+      <h2>Settings</h2>
+      <div class="dropdown">
+        <label for="add-card">Add Card:</label>
+        <select id="add-card">
+          <option value="card1">1234 5678 9101 1121</option>
+          <option value="card2">9090 7822 1172 2550</option>
+          <option value="card3">8121 3857 8821 2011</option>
+        </select>
+      </div>
+      <div class="dropdown">
+        <label for="remove-card">Remove Card:</label>
+        <select id="remove-card">
+          <option value="card1">1234 5678 9101 1121</option>
+          <option value="card2">9090 7822 1172 2550</option>
+          <option value="card3">8121 3857 8821 2011</option>
+        </select>
+      </div>
+      <div class="dropdown">
+        <label for="sort">Sort:</label>
+        <select id="sort">
+          <option value="date">By Date</option>
+          <option value="amount">By Amount</option>
+          <option value="category">By Category</option>
+        </select>
+      </div>
+      <div class="filter">
+        <h3>Filter by Tag</h3>
+        <label><input type="checkbox" value="stores"> Stores</label>
+        <label><input type="checkbox" value="gas"> Gas</label>
+        <label><input type="checkbox" value="groceries"> Groceries</label>
+        <label><input type="checkbox" value="work"> Work</label>
+        <label><input type="checkbox" value="medical"> Medical</label>
+      </div>
+      <button id="add-tag-button">Add Tag</button>
+    </div>
+    
+	<!-- New Tag Menu -->
+    <div id="new-tag-menu" class="new-tag-menu hidden">
+      <button id="close-new-tag-menu" class="close-button">X</button>
+      <h3>New Tag</h3>
+      <div class="form-group">
+        <label for="tag-name">Tag Name:</label>
+        <input type="text" id="tag-name" placeholder="Enter tag name">
+      </div>
+      <div class="form-group">
+        <label for="associated-businesses">Associated Businesses:</label>
+        <select id="associated-businesses">
+          <option value="store-a">Store A</option>
+          <option value="gas-station">Gas Station</option>
+          <option value="grocery-store">Grocery Store</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const toggleSwitch = document.getElementById('toggle-view');
+    const tableContainer = document.querySelector('.table-container');
+    const chartContainer = document.querySelector('.chart-container');
+    const ctx = document.getElementById('transactions-chart').getContext('2d');
+    let isTableView = true;
+
+    const transactionData = {
+      labels: ['Store A', 'Gas Station', 'Grocery Store'],
+      datasets: [{
+        label: 'Money Spent at Vendor',
+        data: [50.00, 30.00, 20.00],
+        backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
+        hoverBackgroundColor: ['#FF6384', '#36A2EB', '#FFCE56']
+      }]
+    };
+
+    let pieChart;
+
+    toggleSwitch.addEventListener('change', () => {
+      if (isTableView) {
+        tableContainer.style.display = 'none';
+        chartContainer.style.display = 'block';
+
+        // Render the pie chart if it doesn't exist
+        if (!pieChart) {
+          pieChart = new Chart(ctx, {
+            type: 'pie',
+            data: transactionData,
+            options: {
+              responsive: true,
+              plugins: {
+                legend: {
+                  position: 'top',
+                },
+              },
+            },
+          });
+        }
+      } else {
+        tableContainer.style.display = 'block';
+        chartContainer.style.display = 'none';
+      }
+      isTableView = !isTableView;
+    });
+
+    const addTagButton = document.getElementById('add-tag-button');
+    const newTagMenu = document.getElementById('new-tag-menu');
+    const closeNewTagMenuButton = document.getElementById('close-new-tag-menu');
+    const overlay = document.getElementById('overlay');
+
+    addTagButton.addEventListener('click', () => {
+      newTagMenu.classList.remove('hidden');
+  	  overlay.classList.remove('hidden');
+    });
+
+    closeNewTagMenuButton.addEventListener('click', () => {
+      newTagMenu.classList.add('hidden');
+        overlay.classList.add('hidden');
+    });
+  </script>
+</body>
+</html>
+
+<!-- vim: set ts=2 sw=2 sts=2 noet filetype=html: -->

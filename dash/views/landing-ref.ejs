@@ -1,0 +1,13 @@
+<%# index.ejs - Landing page %>
+<%- contentFor('body') %>
+<%- include('partials/info.ejs') %>
+<div class="container">
+    <h1>Aggregate</h1>
+    <h3>Bring your finances together<h3>
+    <div class="buttons">
+        <button class="login" onclick="landingClick('login')">Log in</button>
+        <button class="create" onclick="landingClick('create')">Create account</button>
+    </div>
+</div>
+
+<!-- vim: set ts=2 sw=2 sts=2 noet filetype=html: -->

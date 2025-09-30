@@ -1,0 +1,51 @@
+<!-- Flash Messages Partial for EJS templates -->
+<!-- File: /views/partials/flash-messages.ejs -->
+
+<% if (flashMessages && Object.keys(flashMessages).length > 0) { %>
+  <div class="flash-container">
+    <% if (flashMessages.error) { %>
+      <div class="flash-message flash-error">
+        <div class="flash-content">
+          <span class="flash-icon">❌</span>
+          <span class="flash-text"><%= flashMessages.error %></span>
+        </div>
+        <button class="flash-close" onclick="this.parentElement.style.display='none'">×</button>
+      </div>
+    <% } %>
+    
+    <% if (flashMessages.success) { %>
+      <div class="flash-message flash-success">
+        <div class="flash-content">
+          <span class="flash-icon">✅</span>
+          <span class="flash-text"><%= flashMessages.success %></span>
+        </div>
+        <button class="flash-close" onclick="this.parentElement.style.display='none'">×</button>
+      </div>
+    <% } %>
+    
+    <% if (flashMessages.info) { %>
+      <div class="flash-message flash-info">
+        <div class="flash-content">
+          <span class="flash-icon">ℹ️</span>
+          <span class="flash-text"><%= flashMessages.info %></span>
+        </div>
+        <button class="flash-close" onclick="this.parentElement.style.display='none'">×</button>
+      </div>
+    <% } %>
+  </div>
+  
+  <script>
+    // Auto-hide flash messages after 5 seconds
+    document.addEventListener('DOMContentLoaded', () => {
+      setTimeout(() => {
+        const flashMessages = document.querySelectorAll('.flash-message');
+        flashMessages.forEach(el => {
+          el.style.opacity = '0';
+          setTimeout(() => {
+            el.style.display = 'none';
+          }, 500); // Wait for fade out animation
+        });
+      }, 5000);
+    });
+  </script>
+<% } %>

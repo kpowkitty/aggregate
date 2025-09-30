@@ -1,0 +1,30 @@
+{
+  "name": "finance-dashboard",
+  "version": "1.0.0",
+  "description": "Aggregate - Your Personal Finance Dashboard!",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "export NODE_ENV=development && ./node_modules/.bin/nodemon server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "body-parser": "^1.19.1",
+    "dotenv": "^16.5.0",
+    "ejs": "^3.1.10",
+    "express": "^5.1.0",
+    "express-ejs-layouts": "^2.5.1",
+    "express-session": "^1.18.1",
+    "moment": "^2.30.1",
+    "mysql2": "^3.14.1",
+    "plaid": "^30.1.0",
+    "util": "^0.12.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}

@@ -1,0 +1,95 @@
+.account-settings, .bank-management, .stock-management {
+  color: #1a73e8 !important;
+  background-color: #ffffff !important;
+}
+
+.account-settings:hover, .bank-management:hover, .stock-management:hover {
+  background-color: #1a73e8 !important;
+  color: #ffffff !important;
+}
+
+.popup {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #fff;
+  border: 1px solid #ccc;
+  padding: 1rem;
+  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+}
+
+.popup.hidden {
+  display: none;
+}
+
+.popup.active {
+  display: block;
+}
+
+/* Common form section styling */
+.popup h3 {
+  margin-bottom: 1rem;
+  font-size: 1.25rem;
+  color: #333;
+}
+
+.popup label {
+  display: block;
+  margin: 0.5rem 0 0.25rem;
+  font-weight: 500;
+}
+
+.popup input,
+.popup select {
+  width: 100%;
+  padding: 0.5rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+
+.popup input:focus,
+.popup select:focus {
+  border-color: #1a73e8;
+  outline: none;
+}
+
+.popup button {
+  margin-top: 0.75rem;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 8px;
+  background-color: #1a73e8;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.popup button:hover {
+  background-color: #155ac5;
+}
+
+.popup .form-group {
+  margin-bottom: 1rem;
+}
+
+.popup {
+  max-width: 400px;
+  width: 90%;
+}
+
+.close-popup {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background: none;
+  border: none;
+  font-size: 1.25rem;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}

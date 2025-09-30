@@ -1,0 +1,32 @@
+<%# login.ejs - Login page %>
+<%- contentFor('body') %>
+<%- include('partials/info.ejs') %>
+<%- include('partials/home.ejs') %>
+<div class="container">
+  <h1 class="logo">Aggregate</h1>
+  <p class="tagline">Access your dashboard</p>
+  
+  <form action="/login" method="POST">
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" required>
+    </div>
+    
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" required>
+    </div>
+    
+    <button type="submit" class="login-button">Log in</button>
+  </form>
+  
+  <div class="forgot-password">
+    <a href="#">Forgot password?</a>
+  </div>
+  
+  <div class="signup-link">
+      Don't have an account? <a href="/create">Create account</a>
+  </div>
+</div>
+
+<!-- vim: set ts=2 sw=2 sts=2 noet filetype=html: -->
